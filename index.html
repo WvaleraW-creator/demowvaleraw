@@ -1,0 +1,198 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>КАЛЬКУЛЯТОР рАСХОДОВ</title>
+    <link rel="stylesheet" href="./calc.css"/>
+</head>
+
+
+
+<body>
+
+<div id="win_body">
+    <div id="1" class="Summat"></div>
+    <div id="2" class="Product" ></div>
+    <div id="3" class="Fuel"></div>
+     <div id="4" class="Litlt"></div>
+    <div id="5" class="House"> </div>
+    <div id="6" class="Reduct"> </div>
+
+
+    <div class="Start" id="win_calc">
+        <table id="keyBoard" style="width: 480px;
+                            height: 500px;
+                            background-color: white;
+                            border-width:5px;
+                            border-style:solid;
+                            border-color:white;
+                            border-collapse:collapse;
+                            text-align: center;
+                            border-spacing: 0;
+                            border: 1px solid;
+                            border-radius: 20px
+                                            "onclick=type(event)>
+            <tr>
+                <td colspan="3">
+
+                    <div id="cut" style="width: 475px;
+                                                height: 50px;
+                                                text-align: left;
+                                                background: #a491ff;
+                                                border: solid 1px black;
+                                                font-size: 49px;
+                                                overflow: hidden"></div>
+                </td>
+            </tr>
+            <tr >
+                <td ><button class="button">1</button></td>
+                <td><button class="button">2</button></td>
+                <td><button class="button">3</button></td>
+            </tr>
+            <tr>
+                <td><button class="button">4</button></td>
+                <td><button class="button">5</button></td>
+                <td><button class="button">6</button></td>
+            </tr>
+            <tr>
+                <td><button class="button">7</button></td>
+                <td><button class="button">8</button></td>
+                <td><button class="button">9</button></td>
+            </tr>
+            <tr>
+                <td><button class="button"><</button></td>
+                <td><button class="button">0</button></td>
+                <td><button class="button">=</button></td>
+            </tr>
+        </table>
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+        /*e - сумма расходов е2-номер id див совпадает сномером расхода пазиции */
+
+
+
+
+let conter_div=0
+
+now= new Date();/*считываем системную дату и формируем в нужный формат*/
+year=(now.getFullYear())+"";
+month=((now.getMonth())+1)+"-";
+date=(now.getDate())+"-";
+workdate=date+month+year;
+
+dlinamassivarashodov=localStorage.length;/*для вывода статистики график */
+
+
+
+
+    summaVsego=localStorage.getItem("grn"); /*читаем метку суммы остатка в гривнах*/
+    if (summaVsego==null || summaVsego=="NaN") /*если нет метки создаем новую метку grn и заносим 0*/
+    {localStorage.setItem("grn","0");
+        summaVsego=localStorage.getItem("grn");
+        summaVsego=+summaVsego;
+    } else   summaVsego=+summaVsego;
+
+
+    read=localStorage.getItem(workdate);/*проверяем естьли в записях тикущая дата*/
+    if (read==null)
+    {
+        localStorage.setItem(workdate,"0,0,0,0,0");/*если нет заносим нули в поля расходов .-. разделитель*/
+        read=localStorage.getItem(workdate);
+    }
+
+
+    rashodi=[];/*массив расходов*/
+    read.split(",").forEach(function (item){rashodi.push(parseInt(item))});/*переводим массив строки в массив целых чисел*/
+
+
+
+        function raschet(e,e2) {
+
+             if (e2==1){summaVsego=summaVsego+e;
+            localStorage.setItem("grn",summaVsego+"");
+            rashodi[0]=rashodi[0]+e;
+                localStorage.setItem(workdate,rashodi);
+                conter_div=0
+                 document.getElementById('1').innerHTML = summaVsego
+             }
+
+            else{summaVsego=summaVsego-e;
+            rashodi[e2-1]=rashodi[e2-1]+e;
+            localStorage.setItem("grn",summaVsego+"");
+            localStorage.setItem(workdate,rashodi);
+            conter_div=0
+                 document.getElementById('1').innerHTML = summaVsego
+            }
+        }
+
+        function type(event) {
+            const keyCut = document.getElementById("cut")
+            document.getElementById("win_calc").style.display = 'block';
+            let a = event.target.textContent
+            if (a == "=") {
+                a=keyCut.innerText
+                if (a==''){a="0"}
+                document.getElementById("win_calc").style.display = 'none';
+                a=parseInt(a)
+                conter_div=parseInt(conter_div)
+                raschet(a,conter_div)
+                start_event()
+
+            }
+
+            else {
+                if (a == "<") {
+                    a = keyCut.innerText.slice(0, -1)
+                } else a = keyCut.innerText + a
+                keyCut.innerText = a
+
+            }
+        }
+
+
+
+
+function abc()
+{a=this.id
+    if (a<=5) {
+        conter_div=a
+        stop_event()
+        type (event)
+
+}
+}
+
+
+function start_event() {
+    p = document.querySelectorAll('div');/*считываем все элементы див */
+    p.forEach(function (element) {
+        element.onclick = abc;
+    })
+    /*Вешаем события на все див */
+}
+
+function stop_event() {
+    p = document.querySelectorAll('div');/*считываем все элементы див */
+    p.forEach(function (element) {
+        element.onclick = "none";
+    })
+}
+        document.getElementById('1').innerHTML = summaVsego
+
+start_event();
+
+
+
+
+</script>
+</body>
+</html>
+
